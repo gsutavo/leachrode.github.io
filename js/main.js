@@ -117,8 +117,8 @@ function clickTest(x, y, colour) {
 				var lookAbove = true;
 				var lookBelow = true;
 				
-				while (isSameColorAsData(pixW[0], pixW[1], startData) && pixW[0] >= 0 && pixW[0] <= 500
-				&& pixW[1] >= 0 && pixW[1] <= 650) {
+				while (isSameColorAsData(pixW[0], pixW[1], startData) && pixW[0] >= 0 && pixW[0] < 500
+				&& pixW[1] >= 0 && pixW[1] < 650) {
 					if (lookAbove){
 						if (isSameColorAsData(pixW[0], pixW[1]-1, startData)) {
 							Q.push([pixW[0], pixW[1] - 1]);
@@ -148,8 +148,8 @@ function clickTest(x, y, colour) {
 					pixW[0] = pixW[0] - 1;
 				}
 				
-				while (isSameColorAsData(pixE[0], pixE[1], startData) && pixE[0] >= 0 && pixE[0] <= 500
-				&& pixE[1] >= 0 && pixE[1] <= 650) {
+				while (isSameColorAsData(pixE[0], pixE[1], startData) && pixE[0] >= 0 && pixE[0] < 500
+				&& pixE[1] >= 0 && pixE[1] < 650) {
 					if (lookAbove){
 						if (isSameColorAsData(pixE[0], pixE[1] - 1, startData)) {
 							Q.push([pixE[0], pixE[1] - 1]);

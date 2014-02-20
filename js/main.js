@@ -1,5 +1,5 @@
 var globBackImg = new Image();
-globBackImg.src = "img/lighthouse.png";
+globBackImg.src = "img/lighthouse2.png";
 var curColour, curCustomColour;
 var cachedImageData, pixels;
 

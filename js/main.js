@@ -1,6 +1,7 @@
 var globBackImg = new Image();
 globBackImg.src = "img/lighthouse.png";
 var curColour, curCustomColour;
+var imageData = [][];
 
 /**
  * Called onload by the body of the html document. Initialises the size of the canvas, draws the initial
@@ -22,6 +23,12 @@ function setup() {
 	gameCanvas.addEventListener("mousedown", feedback);
 	ctx.font = "35px Arial";
 	ctx.strokeText("Colour the lighthouse", 10, 32);
+	
+	for (int x = 0; x < canvas.width; x++) {
+		for (int y = 0; y < canvas.height; y++) {
+			imageData[x][y] = canvas.getImageData(x, y, 1, 1);
+		}
+	}
 }
 
 /**
@@ -33,22 +40,10 @@ function feedback(event) {
 	var y = event.offsetY;
 	
 	if (y < 550 && !(y < 48 && x < 345)) {
-		repFlood(x,y, curColour);
+		fastFlood(x,y, curColour);
 	} else {
 		pickUpColor(x,y, curColour);
 	}
-}
-
-function repFlood(x, y, curColour) {
-	var gameCanvas = document.getElementById("gameCanvas");
-	var ctx = gameCanvas.getContext("2d");
-	var startData = ctx.getImageData(x, y, 1, 1);
-	
-	startData.data[0] = curColour[0];
-	startData.data[0] = curColour[1];
-	startData.data[0] = curColour[2];
-	
-	ctx.putImageData(startData, x, y);
 }
 
 /**
@@ -64,7 +59,11 @@ function repFlood(x, y, curColour) {
  * use anti-aliasing but that's a graphical issue (those edges could be cleaned up in Photoshop relatively
  * easily).
  */
-function fastflood(xarg, yarg, colour) {
+ function fastFlood(x, y, colour) {
+ 
+ }
+ 
+ function flood(xarg, yarg, colour) {
 	var gameCanvas = document.getElementById("gameCanvas");
 	var ctx = gameCanvas.getContext("2d");
 	var startData = ctx.getImageData(xarg, yarg, 1, 1);

@@ -200,8 +200,8 @@ function pickCustomColor() {
 	
 	if (!(red === 0 && green === 0 && blue === 0)) {
 		curColour = [red, green, blue];
-		fastflood(420, 620, curColour);
-		fastflood(400, 580, curColour);
+		fastFlood(420, 620, curColour);
+		fastFlood(400, 580, curColour);
 	}
 }
 

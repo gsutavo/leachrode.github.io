@@ -117,8 +117,8 @@ function clickTest(x, y, colour) {
 				var lookAbove = true;
 				var lookBelow = true;
 				
-				while (isSameColorAsData(pixW[0], pixW[1], startData) && pixW[0] > 0 && pixW[0] < 500
-				&& pixW[1] > 0 && pixW[1] < 650) {
+				while (isSameColorAsData(pixW[0], pixW[1], startData) && pixW[0] >= 0 && pixW[0] <= 500
+				&& pixW[1] >= 0 && pixW[1] <= 650) {
 					if (lookAbove){
 						if (isSameColorAsData(pixW[0], pixW[1]-1, startData)) {
 							Q.push([pixW[0], pixW[1] - 1]);
@@ -148,8 +148,8 @@ function clickTest(x, y, colour) {
 					pixW[0] = pixW[0] - 1;
 				}
 				
-				while (isSameColorAsData(pixE[0], pixE[1], startData) && pixE[0] > 0 && pixE[0] < 500
-				&& pixE[1] > 0 && pixE[1] < 650) {
+				while (isSameColorAsData(pixE[0], pixE[1], startData) && pixE[0] >= 0 && pixE[0] <= 500
+				&& pixE[1] >= 0 && pixE[1] <= 650) {
 					if (lookAbove){
 						if (isSameColorAsData(pixE[0], pixE[1] - 1, startData)) {
 							Q.push([pixE[0], pixE[1] - 1]);
@@ -200,8 +200,7 @@ function pickCustomColor() {
 	
 	if (!(red === 0 && green === 0 && blue === 0)) {
 		curColour = [red, green, blue];
-		fastFlood(420, 620, curColour);
-		fastFlood(400, 580, curColour);
+		fastFlood(430, 600, curColour);
 	}
 }
 
@@ -234,12 +233,14 @@ function pickUpColor(x, y) {
 	var newColour = ctx.getImageData(x, y, 1, 1);
 
 	if (newColour.data[0] === 255 && newColour.data[1] === 255 && newColour.data[2] === 255) {
-		var testColour = ctx.getImageData(420, 620);
+		var testColour = ctx.getImageData(430, 620);
 		if (testColour.data[0] === 255 && testColour.data[1] === 255 && testColour.data[2] === 255) {
 			curColour=[newColour.data[0],newColour.data[1],newColour.data[2]];
 		}
 	} else {
-		curColour=[newColour.data[0],newColour.data[1],newColour.data[2]];
+		if (!(newColour.data[0] === 0 && newColour.data[1] === 0 && newColour.data[2] === 0)) {
+			curColour=[newColour.data[0],newColour.data[1],newColour.data[2]];
+		}
 	}
 }
 

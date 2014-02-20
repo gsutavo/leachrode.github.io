@@ -1,7 +1,7 @@
 var globBackImg = new Image();
 globBackImg.src = "img/lighthouse.png";
 var curColour, curCustomColour;
-var imageData = [][];
+var cachedImageData, pixels;
 
 /**
  * Called onload by the body of the html document. Initialises the size of the canvas, draws the initial
@@ -24,11 +24,33 @@ function setup() {
 	ctx.font = "35px Arial";
 	ctx.strokeText("Colour the lighthouse", 10, 32);
 	
-	for (int x = 0; x < canvas.width; x++) {
-		for (int y = 0; y < canvas.height; y++) {
-			imageData[x][y] = canvas.getImageData(x, y, 1, 1);
-		}
-	}
+	curColour = [86, 199, 184];
+	
+	cachedImageData = ctx.getImageData(0, 0, gameCanvas.width, gameCanvas.height);
+}
+
+function getR(x, y) {
+	return cachedImageData.data[(((y * 500 * 4) + x * 4) + 0)];
+}
+
+function setR(x, y, newR) {
+	cachedImageData.data[(((y * 500 * 4) + x * 4) + 0)] = newR;
+}
+
+function getG(x, y) {
+	return cachedImageData.data[(((y * 500 * 4) + x * 4) + 1)];
+}
+
+function setG(x, y, newG) {
+	cachedImageData.data[(((y * 500 * 4) + x * 4) + 1)] = newG;
+}
+
+function getB(x, y) {
+	return cachedImageData.data[(((y * 500 * 4) + x * 4) + 2)];
+}
+
+function setB(x, y, newB) {
+	cachedImageData.data[(((y * 500 * 4) + x * 4) + 2)] = newB;
 }
 
 /**
@@ -40,10 +62,23 @@ function feedback(event) {
 	var y = event.offsetY;
 	
 	if (y < 550 && !(y < 48 && x < 345)) {
-		fastFlood(x,y, curColour);
+		fastFlood(x, y, curColour);
 	} else {
 		pickUpColor(x,y, curColour);
 	}
+}
+
+function clickTest(x, y, colour) {
+	var gameCanvas = document.getElementById("gameCanvas");
+	var ctx = gameCanvas.getContext("2d");
+
+	cachedImageData.data[(((y * 500 * 4) + x * 4) + 0)] = colour[0];
+	cachedImageData.data[(((y * 500 * 4) + x * 4) + 1)] = colour[1];
+	cachedImageData.data[(((y * 500 * 4) + x * 4) + 2)] = colour[2];
+	
+	var check = cachedImageData;
+	
+	ctx.putImageData(cachedImageData, 0, 0);
 }
 
 /**
@@ -60,25 +95,20 @@ function feedback(event) {
  * easily).
  */
  function fastFlood(x, y, colour) {
- 
- }
- 
- function flood(xarg, yarg, colour) {
 	var gameCanvas = document.getElementById("gameCanvas");
 	var ctx = gameCanvas.getContext("2d");
-	var startData = ctx.getImageData(xarg, yarg, 1, 1);
+	var startData = [getR(x,y), getG(x,y), getB(x,y)];
 	var pixW = [];
 	var	pixE = [];
 	var curPix;
 	var Q = [];
 	
-	if (!(startData.data[0] === curColour[0] && startData.data[1] === curColour[1] && startData.data[2] === curColour[2])) {
-		if (!(startData.data[0] === 0 && startData.data[1] === 0 && startData.data[2] === 0)) {
-			Q.push([xarg, yarg]);
+	if (!(startData[0] === curColour[0] && startData[1] === curColour[1] && startData[2] === curColour[2])) {
+		if (!(startData[0] === 0 && startData[1] === 0 && startData[2] === 0)) {
+			Q.push([x,y]);
 			
 			while (Q.length) {
 				curPix = Q.shift();
-				var pixelData = ctx.getImageData(curPix[0], curPix[1], 1, 1);
 				pixW[0] = curPix[0] - 1;
 				pixW[1] = curPix[1];
 				pixE[0] = curPix[0];
@@ -87,78 +117,71 @@ function feedback(event) {
 				var lookAbove = true;
 				var lookBelow = true;
 				
-				while (isSameColorData(ctx.getImageData(pixW[0], pixW[1], 1, 1), startData)) {
+				while (isSameColorAsData(pixW[0], pixW[1], startData)) {
 					if (lookAbove){
-						if (isSameColorData(startData, ctx.getImageData(pixW[0], pixW[1] - 1, 1 , 1))) {
+						if (isSameColorAsData(pixW[0], pixW[1]-1, startData)) {
 							Q.push([pixW[0], pixW[1] - 1]);
 							lookAbove = false;
 						}
 					} else {
-						if (!isSameColor(pixW[0], pixW[1], pixW[0], pixW[1] - 1)) {
+						if (!isSameColorAsData(pixW[0], pixW[1] - 1, startData)) {
 							lookAbove = true;
 						}
 					}
 					
 					if (lookBelow){
-						if (isSameColorData(startData, ctx.getImageData(pixW[0], pixW[1] + 1, 1 , 1))) {
+						if (isSameColorAsData(pixW[0], pixW[1]+1, startData)) {
 							Q.push([pixW[0], pixW[1] + 1]);
 							lookBelow = false;
 						}
 					} else {
-						if (!isSameColor(pixW[0], pixW[1], pixW[0], pixW[1] + 1)) {
+						if (!isSameColorAsData(pixW[0], pixW[1] + 1, startData)) {
 							lookBelow = true;
 						}
 					}
 					
-					var imgDataToChange = ctx.getImageData(pixW[0], pixW[1], 1 , 1);
-				
-					imgDataToChange.data[0] = curColour[0];
-					imgDataToChange.data[1] = curColour[1];
-					imgDataToChange.data[2] = curColour[2];
-					
-					ctx.putImageData(imgDataToChange,pixW[0], pixW[1]);
+					setR(pixW[0], pixW[1], curColour[0]);
+					setG(pixW[0], pixW[1], curColour[1]);
+					setB(pixW[0], pixW[1], curColour[2]);
 					
 					pixW[0] = pixW[0] - 1;
 				}
 				
-				while (isSameColorData(ctx.getImageData(pixE[0], pixE[1], 1, 1), startData)) {
+				while (isSameColorAsData(pixE[0], pixE[1], startData)) {
 					if (lookAbove){
-						if (isSameColor(pixE[0], pixE[1], pixE[0], pixE[1] - 1)) {
+						if (isSameColorAsData(pixE[0], pixE[1] - 1, startData)) {
 							Q.push([pixE[0], pixE[1] - 1]);
 							lookAbove = false;
 						}
 					} else {
-						if (!isSameColor(pixE[0], pixE[1], pixE[0], pixE[1] - 1)) {
+						if (!isSameColorAsData(pixE[0], pixE[1] - 1, startData)) {
 							lookAbove = true;
 						}
 					}
 					
 					if (lookBelow){
-						if (isSameColorData(startData, ctx.getImageData(pixE[0], pixE[1] + 1, 1 , 1))) {
+						if (isSameColorAsData(pixE[0], pixE[1] + 1, startData)) {
 							Q.push([pixE[0], pixE[1] + 1]);
 							lookBelow = false;
 						}
 					} else {
-						if (!isSameColor(pixE[0], pixE[1], pixE[0], pixE[1] + 1)) {
+						if (!isSameColor(pixE[0], pixE[1] + 1, startData)) {
 							lookBelow = true;
 						}
 					}
-				
-					var imgDataToChange = ctx.getImageData(pixE[0], pixE[1], 1 , 1);
-				
-					imgDataToChange.data[0] = curColour[0];
-					imgDataToChange.data[1] = curColour[1];
-					imgDataToChange.data[2] = curColour[2];
 					
-					ctx.putImageData(imgDataToChange,pixE[0], pixE[1]);
+					setR(pixE[0], pixE[1], curColour[0]);
+					setG(pixE[0], pixE[1], curColour[1]);
+					setB(pixE[0], pixE[1], curColour[2]);
 					
 					pixE[0] = pixE[0] + 1;
 				}
-			
 			}
 		}
 	}
-}
+ 
+	ctx.putImageData(cachedImageData, 0, 0);
+ }
 
 /**
  * Called when a change is detected in the colour input below the canvas. Sets the current colour to the
@@ -223,15 +246,12 @@ function pickUpColor(x, y) {
  * check whether or not it should continue to progress in a given direction
  */
 function isSameColor(pixOneX, pixOneY, pixTwoX, pixTwoY) {
-	var gameCanvas = document.getElementById("gameCanvas");
-	var ctx = gameCanvas.getContext("2d");
+	var pixelDataOne = [getR(pixOneX,pixOneY), getG(pixOneX,pixOneX), getB(pixOneX,pixOneX)];
+	var pixelDataTwo = [getR(pixTwoX,pixTwoY), getG(pixTwoX,pixTwoX), getB(pixTwoX,pixTwoX)];
 	
-	var pixelDataOne = ctx.getImageData(pixOneX, pixOneY, 1 , 1);
-	var pixelDataTwo = ctx.getImageData(pixTwoX, pixTwoY, 1 , 1);
-	
-	if (pixelDataOne.data[0] === pixelDataTwo.data[0]) {
-		if (pixelDataOne.data[1] === pixelDataTwo.data[1]) {
-			if (pixelDataOne.data[2] === pixelDataTwo.data[2]) {
+	if (pixelDataOne[0] === pixelDataTwo[0]) {
+		if (pixelDataOne[1] === pixelDataTwo[1]) {
+			if (pixelDataOne[2] === pixelDataTwo[2]) {
 				return true;
 			}
 		}
@@ -240,16 +260,16 @@ function isSameColor(pixOneX, pixOneY, pixTwoX, pixTwoY) {
 	return false;
 }
 
-/**
- * Checks that two sets of colour data represent the same colour. Used multiple times in the fast flood 
- * method to check whether or not it should continue to progress in a given direction.
- */
-function isSameColorData(dataOne, dataTwo) {
-	if (dataOne.data[0] === dataTwo.data[0]) {
-		if (dataOne.data[1] === dataTwo.data[1]) {
-			if (dataOne.data[2] === dataTwo.data[2]) {
+function isSameColorAsData(pixOneX, pixOneY, compData) {
+	var pixelDataOne = [getR(pixOneX,pixOneY), getG(pixOneX,pixOneY), getB(pixOneX,pixOneY)];
+	
+	if (pixelDataOne[0] === compData[0]) {
+		if (pixelDataOne[1] === compData[1]) {
+			if (pixelDataOne[2] === compData[2]) {
 				return true;
 			}
 		}
 	}
-}
+	
+	return false;
+}	

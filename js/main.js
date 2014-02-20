@@ -43,9 +43,12 @@ function repFlood(x, y, curColour) {
 	var gameCanvas = document.getElementById("gameCanvas");
 	var ctx = gameCanvas.getContext("2d");
 	var startData = ctx.getImageData(x, y, 1, 1);
+	
 	startData.data[0] = curColour[0];
 	startData.data[0] = curColour[1];
 	startData.data[0] = curColour[2];
+	
+	ctx.putImageData(startData, x, y);
 }
 
 /**

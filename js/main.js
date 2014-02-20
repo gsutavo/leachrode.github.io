@@ -33,10 +33,19 @@ function feedback(event) {
 	var y = event.offsetY;
 	
 	if (y < 550 && !(y < 48 && x < 345)) {
-		fastflood(x,y, curColour);
+		repFlood(x,y, curColour);
 	} else {
 		pickUpColor(x,y, curColour);
 	}
+}
+
+function repFlood(x, y, curColour) {
+	var gameCanvas = document.getElementById("gameCanvas");
+	var ctx = gameCanvas.getContext("2d");
+	var startData = ctx.getImageData(x, y, 1, 1);
+	startData.data[0] = curColour[0];
+	startData.data[0] = curColour[1];
+	startData.data[0] = curColour[2];
 }
 
 /**

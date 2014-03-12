@@ -10,17 +10,65 @@ function setup() {
 	var ctx = gameCanvas.getContext("2d");
 	var backgroundImg = globBackImg;
 
-	document.getElementById("gameCanvas").width = 750;
-	document.getElementById("gameCanvas").height = 500;
+	gameCanvas.width = 750;
+	gameCanvas.height = 500;
 	
 	ctx.drawImage(backgroundImg, 0, 0);
 	gameCanvas.addEventListener("mousedown", feedback);
+	
+	var LeftButton = document.getElementById("left");
+	LeftButton.addEventListener("click", clickLeft);
+	
+	var RightButton = document.getElementById("right");
+	RightButton.addEventListener("click", clickRight);
+	
+	var UpButton = document.getElementById("up");
+	UpButton.addEventListener("click", clickUp);
+	
+	var DownButton = document.getElementById("down");
+	DownButton.addEventListener("click", clickDown);
 }
 
 /**
  * Called on mousedown on the game canvas.
  *
-*/
-function feedback() {
+ */
+function feedback(event) {
 
+}
+
+/**
+ * Called on clicking the left button on the input panel
+ *
+ */
+function clickLeft(event) {
+	var command = document.getElementById("commandString");
+	command.value = command.value + "L";
+}
+
+/**
+ * Called on clicking the right button on the input panel
+ *
+ */
+function clickRight(event) {
+	var command = document.getElementById("commandString");
+	command.value = command.value + "R";
+}
+
+/**
+ * Called on clicking the up button on the input panel
+ *
+ */
+function clickUp(event) {
+	var command = document.getElementById("commandString");
+	command.value = command.value + "U";
+}
+
+/**
+ * Called on clicking the down button on the input panel
+ *
+ */
+function clickDown(event) {
+	var command = document.getElementById("commandString");
+	command.value = command.value + "D";
 }

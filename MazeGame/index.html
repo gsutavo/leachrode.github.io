@@ -3,16 +3,21 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Lighthouse Game!</title>
+		<title>Maze Game!</title>
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css" />
 	</head>
 	<body onload="setup()">
 		<canvas id="gameCanvas"></canvas>
-		<section>
-			<p>Input your instruction string here: U, R, L, D, separate them with spaces</p>
-			<input type="text" id="inputstring"/>
-			<button type="button" id="inputbutton"/>Submit</button>
+		<section id="commandSect">
+			<input type="text" id="commandString" readonly/>
+			<button type="button" id="submit">Submit</button>
+		</section>
+		<section id="inputSect">
+			<button type="button" id="left">LEFT</button>
+			<button type="button" id="up">UP</button>
+			<button type="button" id="right">RIGHT</button>
+			<button type="button" id="down">DOWN</button>
 		</section>
 	</body>
 </html>

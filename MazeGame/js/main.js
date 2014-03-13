@@ -1,5 +1,6 @@
 var globBackImg = new Image();
 globBackImg.src = "img/mazegameui.png";
+var cachedData;
 
 /**
  * Called onload by the body of the html document. Initialises the size of the canvas, draws the initial
@@ -27,6 +28,9 @@ function setup() {
 	
 	var DownButton = document.getElementById("down");
 	DownButton.addEventListener("click", clickDown);
+	
+	cachedData = ctx.getImageData(0, 0, 750, 750);
+	prompt();
 }
 
 /**

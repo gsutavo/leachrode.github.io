@@ -1,6 +1,5 @@
-var globBackImg = new Image();
-globBackImg.src = "img/mazegameui.png";
-var cachedData, mazeGrid;
+var cachedData;
+var mazeGrid = [];
 
 /**
  * Called onload by the body of the html document. Initialises the size of the canvas, draws the initial
@@ -9,12 +8,10 @@ var cachedData, mazeGrid;
 function setup() {	
 	var gameCanvas = document.getElementById("gameCanvas");
 	var ctx = gameCanvas.getContext("2d");
-	var backgroundImg = globBackImg;
 
 	gameCanvas.width = 750;
 	gameCanvas.height = 500;
 	
-	ctx.drawImage(backgroundImg, 0, 0);
 	gameCanvas.addEventListener("mousedown", feedback);
 	
 	var LeftButton = document.getElementById("left");

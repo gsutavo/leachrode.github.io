@@ -1,5 +1,6 @@
 var cachedData;
-var mazeGrid = [];
+var mazeGrid = {};
+var playerX, playerY;
 
 /**
  * Called onload by the body of the html document. Initialises the size of the canvas, draws the initial
@@ -26,39 +27,65 @@ function setup() {
 	var DownButton = document.getElementById("down");
 	DownButton.addEventListener("click", clickDown);
 	
+	var SubmitButton = document.getElementById("submit");
+	SubmitButton.addEventListener("click", clickSubmit);
+	
 	for (var x = 0; x < 30; x++) {
+		mazeGrid[x] = {}
 		for (var y = 0; y < 20; y++) {
-			mazeGrid[x][y] = 0;
+			mazeGrid[x][y] = "w";
 		}
 	}
 	
-	mazeGrid[5][5] = 1;
+	mazeGrid[3][5] = "p";
+	playerX = 3;
+	playerY = 5;
+	mazeGrid[4][5] = "n";
+	mazeGrid[5][5] = "n";
+	mazeGrid[5][5] = "n";
+	mazeGrid[5][5] = "n";
 	
-	cachedData = ctx.getImageData(0, 0, 750, 750);
+	cachedData = ctx.getImageData(0, 0, 750, 500);
+	render();
+}
+
+function render() {
+	var gameCanvas = document.getElementById("gameCanvas");
+	var ctx = gameCanvas.getContext("2d");
+
 	for (var x = 0; x < 30; x++) {
 		for (var y = 0; y < 20; y++) {
-			if (mazeGrid[x][y] === 0) {
-				boxFill(x, y, true);
+			if (mazeGrid[x][y] === "w") {
+				boxFill(x, y, true, false);
+			} else if (mazeGrid[x][y] === "p") {
+				boxFill(x, y, false, true);
 			} else {
-				boxFill(x, y, false);
+				boxFill(x, y, false, false);
 			}
 		}
 	}
 	
-	ctx.putImageData(cachedImageData, 0, 0);
+	ctx.putImageData(cachedData, 0, 0);
 }
 
-function boxFill(xCoord, yCoord, isBlack) {
-	for (var x = (75 * xCoord); x < (((xCoord + 1) * 75) - 1); x++) {
-		for (var y = (75 * yCoord); y < (((yCoord + 1) * 75) - 1); y++) {
-			if (isBlack) {
-				cachedData.data[(((y * 500 * 4) + x * 4) + 0)] = 255;
-				cachedData.data[(((y * 500 * 4) + x * 4) + 1)] = 255;
-				cachedData.data[(((y * 500 * 4) + x * 4) + 2)] = 255;
+function boxFill(xCoord, yCoord, isWall, isPlayer) {
+	for (var x = (25 * xCoord); x < (((xCoord + 1) * 25) - 1); x++) {
+		for (var y = (25 * yCoord); y < (((yCoord + 1) * 25) - 1); y++) {
+			if (isWall) {
+				cachedData.data[(((y * 750 * 4) + x * 4) + 0)] = 0;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 1)] = 0;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 2)] = 0;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 3)] = 255;
+			} else if (isPlayer) {
+				cachedData.data[(((y * 750 * 4) + x * 4) + 0)] = 255;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 1)] = 0;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 2)] = 0;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 3)] = 255;
 			} else {
-				cachedData.data[(((y * 500 * 4) + x * 4) + 0)] = 0;
-				cachedData.data[(((y * 500 * 4) + x * 4) + 1)] = 0;
-				cachedData.data[(((y * 500 * 4) + x * 4) + 2)] = 0;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 0)] = 255;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 1)] = 255;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 2)] = 255;
+				cachedData.data[(((y * 750 * 4) + x * 4) + 3)] = 255;
 			}
 		}
 	}
@@ -70,6 +97,63 @@ function boxFill(xCoord, yCoord, isBlack) {
  */
 function feedback(event) {
 
+}
+
+function clickSubmit(event) {
+	var command = document.getElementById("commandString");
+	var inputString = command.value;
+	command.value = "";
+	
+	for (var x = 0; x < inputString.length; x++) {
+		if (inputString[x] === "L") {
+			moveLeft();
+		} else if (inputString[x] === "R") {
+			moveRight();
+		} else if (inputString[x] === "U") {
+			moveUp();
+		} else if (inputString[x] === "D") {
+			moveDown();
+		}
+	}
+	
+	render();
+	
+	function moveLeft() {
+		if (mazeGrid[playerX - 1][playerY] === "n") {
+			mazeGrid[playerX - 1][playerY] = "p";
+			mazeGrid[playerX][playerY] = "n";
+			playerX = playerX - 1;
+		}
+		render();
+	}
+	
+	function moveRight() {
+		if (mazeGrid[playerX + 1][playerY] === "n") {
+			mazeGrid[playerX + 1][playerY] = "p";
+			mazeGrid[playerX][playerY] = "n";
+			playerX = playerX + 1;
+		}
+		
+		render();
+	}
+	
+	function moveUp() {
+		if (mazeGrid[playerX][playerY - 1] === "n") {
+			mazeGrid[playerX][playerY - 1] = "p";
+			mazeGrid[playerX][playerY] = "n";
+			playerY = playerY - 1
+		}
+		render();
+	}
+	
+	function moveDown() {
+		if (mazeGrid[playerX][playerY + 1] === "n") {
+			mazeGrid[playerX][playerY + 1] = "p";
+			mazeGrid[playerX][playerY] = "n";
+			playerY = playerY - 1
+		}
+		render();
+	}
 }
 
 /**

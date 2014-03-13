@@ -1,6 +1,6 @@
 var globBackImg = new Image();
 globBackImg.src = "img/mazegameui.png";
-var cachedData;
+var cachedData, mazeGrid;
 
 /**
  * Called onload by the body of the html document. Initialises the size of the canvas, draws the initial
@@ -29,8 +29,42 @@ function setup() {
 	var DownButton = document.getElementById("down");
 	DownButton.addEventListener("click", clickDown);
 	
+	for (var x = 0; x < 30; x++) {
+		for (var y = 0; y < 20; y++) {
+			mazeGrid[x][y] = 0;
+		}
+	}
+	
+	mazeGrid[5][5] = 1;
+	
 	cachedData = ctx.getImageData(0, 0, 750, 750);
-	prompt();
+	for (var x = 0; x < 30; x++) {
+		for (var y = 0; y < 20; y++) {
+			if (mazeGrid[x][y] === 0) {
+				boxFill(x, y, true);
+			} else {
+				boxFill(x, y, false);
+			}
+		}
+	}
+	
+	ctx.putImageData(cachedImageData, 0, 0);
+}
+
+function boxFill(xCoord, yCoord, isBlack) {
+	for (var x = (75 * xCoord); x < (((xCoord + 1) * 75) - 1); x++) {
+		for (var y = (75 * yCoord); y < (((yCoord + 1) * 75) - 1); y++) {
+			if (isBlack) {
+				cachedData.data[(((y * 500 * 4) + x * 4) + 0)] = 255;
+				cachedData.data[(((y * 500 * 4) + x * 4) + 1)] = 255;
+				cachedData.data[(((y * 500 * 4) + x * 4) + 2)] = 255;
+			} else {
+				cachedData.data[(((y * 500 * 4) + x * 4) + 0)] = 0;
+				cachedData.data[(((y * 500 * 4) + x * 4) + 1)] = 0;
+				cachedData.data[(((y * 500 * 4) + x * 4) + 2)] = 0;
+			}
+		}
+	}
 }
 
 /**

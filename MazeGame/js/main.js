@@ -15,20 +15,26 @@ function setup() {
 	
 	gameCanvas.addEventListener("mousedown", feedback);
 	
-	var LeftButton = document.getElementById("left");
-	LeftButton.addEventListener("click", clickLeft);
+	var leftButton = document.getElementById("left");
+	leftButton.addEventListener("click", clickLeft);
 	
-	var RightButton = document.getElementById("right");
-	RightButton.addEventListener("click", clickRight);
+	var rightButton = document.getElementById("right");
+	rightButton.addEventListener("click", clickRight);
 	
-	var UpButton = document.getElementById("up");
-	UpButton.addEventListener("click", clickUp);
+	var upButton = document.getElementById("up");
+	upButton.addEventListener("click", clickUp);
 	
-	var DownButton = document.getElementById("down");
-	DownButton.addEventListener("click", clickDown);
+	var downButton = document.getElementById("down");
+	downButton.addEventListener("click", clickDown);
 	
-	var SubmitButton = document.getElementById("submit");
-	SubmitButton.addEventListener("click", clickSubmit);
+	var submitButton = document.getElementById("submit");
+	submitButton.addEventListener("click", clickSubmit);
+	
+	var startForButton = document.getElementById("startForButton");
+	startForButton.addEventListener("click", clickStartFor);
+	
+	var stopForButton = document.getElementById("stopForButton");
+	stopForButton.addEventListener("click", clickStopFor);
 	
 	for (var x = 0; x < 30; x++) {
 		mazeGrid[x] = {};
@@ -113,6 +119,26 @@ function feedback(event) {
 }
 
 /**
+ * Called on clicking the start for button on the input panel
+ *
+ */
+function clickStartFor(event) {
+	var command = document.getElementById("commandString");
+	var forNum = document.getElementById("forNum");
+	command.value = command.value + forNum.value;
+	forNum.value = "";
+}
+
+/**
+ * Called on clicking the stop for button on the input panel
+ *
+ */
+function clickStopFor(event) {
+	var command = document.getElementById("commandString");
+	command.value = command.value + "*";
+}
+ 
+/**
  * Processes the content of the submit button
  *
  */
@@ -120,6 +146,41 @@ function clickSubmit(event) {
 	var command = document.getElementById("commandString");
 	var inputString = command.value;
 	command.value = "";
+	var commandString = "";
+	
+	for (var x = 0; x < inputString.length; x++) {
+		if (!(isNaN(inputString[x]))) {
+			var ast = findMatchAst(inputString, x + 1);
+			inputString = inputString.substring(0, x) + copy(inputString.substring(x + 1, ast), inputString[x]) + inputString.substring(ast + 1);
+			x++
+		}
+	}
+	
+	function copy(input, num) {
+		var output = "";
+		
+		for (var x = 0; x < num; x++) {
+			output = output + input;
+		}
+		
+		return output;
+	}
+	
+	function findMatchAst (searchString, start) {
+		var numToSkip = 0;
+		
+		for (var x = start; x < searchString.length; x++) {
+			if (!(isNaN(searchString[x]))) {
+				numToSkip++;
+			} else if (searchString[x] === "*") {
+				if (numToSkip === 0) {
+					return x;
+				} else {
+					numToSkip--;
+				}
+			}
+		}
+	}
 	
 	var counter = 0;
 	var steps = inputString.length;

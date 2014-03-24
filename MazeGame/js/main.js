@@ -1,6 +1,7 @@
 var cachedData;
 var mazeGrid = {};
 var playerX, playerY, initPlayerX, initPlayerY;
+var numberLevel = 1;
 
 /**
  * Called onload by the body of the html document. Initialises the size of the canvas, draws the initial
@@ -35,7 +36,8 @@ function setup() {
 	
 	var stopForButton = document.getElementById("stopForButton");
 	stopForButton.addEventListener("click", clickStopFor);
-	
+
+/*	
 	for (var x = 0; x < 30; x++) {
 		mazeGrid[x] = {};
 		for (var y = 0; y < 20; y++) {
@@ -55,10 +57,63 @@ function setup() {
 	mazeGrid[6][7] = "n";
 	mazeGrid[6][8] = "n";
 	mazeGrid[7][8] = "g";
-	
+*/	
+	updateGrid(1);
 	cachedData = ctx.getImageData(0, 0, 750, 500);
 	render();
 }
+
+/**
+* Updates the MazeGrid, Player position and Player initial position.
+* Used when the level is clear. Receives a Level Clear boolean.
+*
+*/
+
+function updateGrid(levelClear){
+	if(levelClear > 0){
+		for (var x = 0; x < 30; x++) {
+		mazeGrid[x] = {};
+		for (var y = 0; y < 20; y++) {
+			mazeGrid[x][y] = "w";
+			}
+		}
+		if(numberLevel == 1){
+			mazeGrid[3][5] = "p";
+			playerX = 3;
+			playerY = 5;
+			initPlayerX = 3;
+			initPlayerY = 5;
+			mazeGrid[4][5] = "n";
+			mazeGrid[5][5] = "n";
+			mazeGrid[5][6] = "n";
+			mazeGrid[5][7] = "n";
+			mazeGrid[6][7] = "n";
+			mazeGrid[6][8] = "n";
+			mazeGrid[7][8] = "g";
+		}
+		if(numberLevel == 2){
+			mazeGrid[5][5] = "p";
+			playerX = 5;
+			playerY = 5;
+			initPlayerX = 5;
+			initPlayerY = 5;
+			mazeGrid[4][5] = "n";
+			mazeGrid[3][5] = "n";
+			mazeGrid[2][5] = "n";
+			mazeGrid[2][6] = "n";
+			mazeGrid[2][7] = "n";
+			mazeGrid[2][8] = "n";
+			mazeGrid[1][8] = "g";			
+			
+		}
+		
+	}
+	
+}
+
+
+
+
 
 /**
  * Updates the cached data based on the current formation of the maze and then pushes
@@ -231,6 +286,9 @@ function clickSubmit(event) {
 			playerX = playerX + 1;
 		} else if (mazeGrid[playerX + 1][playerY] === "g") {
 			alert("You win!");
+			//Just for testing purposes
+			numberLevel++;
+			updateGrid(1);
 		}
 		render();
 	}

@@ -9,3 +9,17 @@ body {
 canvas {
 	border: 1px solid black;
 }
+
+#inputSect {
+	border: 1px solid black;
+	width: 400px;
+	margin: auto;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+#forSect {
+	border: 1px solid black;
+	width: 400px;
+	margin: auto;
+}

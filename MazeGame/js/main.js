@@ -28,11 +28,20 @@ function setup() {
 	var downButton = document.getElementById("down");
 	downButton.addEventListener("click", clickDown);
 	
+	var forLeftButton = document.getElementById("forleft");
+	forLeftButton.addEventListener("click", clickForLeft);
+	
+	var forRightButton = document.getElementById("forright");
+	forRightButton.addEventListener("click", clickForRight);
+	
+	var forUpButton = document.getElementById("forup");
+	forUpButton.addEventListener("click", clickForUp);
+	
+	var forDownButton = document.getElementById("fordown");
+	forDownButton.addEventListener("click", clickForDown);
+	
 	var submitButton = document.getElementById("submit");
 	submitButton.addEventListener("click", clickSubmit);
-	
-	var startForButton = document.getElementById("startForButton");
-	startForButton.addEventListener("click", clickStartFor);
 	
 	var stopForButton = document.getElementById("stopForButton");
 	stopForButton.addEventListener("click", clickStopFor);
@@ -174,23 +183,23 @@ function feedback(event) {
 }
 
 /**
- * Called on clicking the start for button on the input panel
- *
- */
-function clickStartFor(event) {
-	var command = document.getElementById("commandString");
-	var forNum = document.getElementById("forNum");
-	command.value = command.value + forNum.value;
-	forNum.value = "";
-}
-
-/**
  * Called on clicking the stop for button on the input panel
  *
  */
 function clickStopFor(event) {
 	var command = document.getElementById("commandString");
-	command.value = command.value + "*";
+	var numTimes = document.getElementById("forNum");
+	var forCommand = document.getElementById("forInstr");
+	if(!(isNaN(numTimes.value))) {
+		var number = numTimes.value;
+		command.value = command.value + number;
+		command.value = command.value + forCommand.value;
+		command.value = command.value + "*";
+		forCommand.value = "";
+		numTimes.value = "";
+	} else {
+		numTimes.value = "That's not a number";
+	}
 }
  
 /**
@@ -325,12 +334,22 @@ function clickLeft(event) {
 	command.value = command.value + "L";
 }
 
+function clickForLeft(event) {
+	var command = document.getElementById("forInstr");
+	command.value = command.value + "L";
+}
+
 /**
  * Called on clicking the right button on the input panel
  *
  */
 function clickRight(event) {
 	var command = document.getElementById("commandString");
+	command.value = command.value + "R";
+}
+
+function clickForRight(event) {
+	var command = document.getElementById("forInstr");
 	command.value = command.value + "R";
 }
 
@@ -343,11 +362,21 @@ function clickUp(event) {
 	command.value = command.value + "U";
 }
 
+function clickForUp(event) {
+	var command = document.getElementById("forInstr");
+	command.value = command.value + "U";
+}
+
 /**
  * Called on clicking the down button on the input panel
  *
  */
 function clickDown(event) {
 	var command = document.getElementById("commandString");
+	command.value = command.value + "D";
+}
+
+function clickForDown(event) {
+	var command = document.getElementById("forInstr");
 	command.value = command.value + "D";
 }

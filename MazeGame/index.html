@@ -14,15 +14,31 @@
 			<button type="button" id="submit">Submit</button>
 		</section>
 		<section id="inputSect">
-			<button type="button" id="left">LEFT</button>
-			<button type="button" id="up">UP</button>
-			<button type="button" id="right">RIGHT</button>
-			<button type="button" id="down">DOWN</button>
-			<section id="forSect">
-				<button type="button" id="startForButton">START FOR</button>
+			<p>Normal instructions</p>
+			<div class="buttons">
+				<button type="button" id="left">LEFT</button>
+				<button type="button" id="up">UP</button>
+				<button type="button" id="right">RIGHT</button>
+				<button type="button" id="down">DOWN</button>
+			</div>
+		</section>
+		<section id="forSect">
+			<p>For loop</p>
+			<div class="buttons">
+				<button type="button" id="forleft">LEFT</button>
+				<button type="button" id="forup">UP</button>
+				<button type="button" id="forright">RIGHT</button>
+				<button type="button" id="fordown">DOWN</button>
+			</div>
+			<div>
+				<label>Number of times</label>
 				<input type="text" id="forNum"/>
-				<button type="button" id="stopForButton">STOP FOR</button>
-			</section>
+			</div>
+			<div>
+				<label>Current instruction</label>
+				<input type="text" id="forInstr" readonly/>
+			</div>
+			<button type="button" id="stopForButton">SUBMIT FOR</button>
 		</section>
 	</body>
 </html>

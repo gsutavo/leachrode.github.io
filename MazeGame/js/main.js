@@ -46,27 +46,7 @@ function setup() {
 	var stopForButton = document.getElementById("stopForButton");
 	stopForButton.addEventListener("click", clickStopFor);
 
-/*	
-	for (var x = 0; x < 30; x++) {
-		mazeGrid[x] = {};
-		for (var y = 0; y < 20; y++) {
-			mazeGrid[x][y] = "w";
-		}
-	}
 	
-	mazeGrid[3][5] = "p";
-	playerX = 3;
-	playerY = 5;
-	initPlayerX = 3;
-	initPlayerY = 5;
-	mazeGrid[4][5] = "n";
-	mazeGrid[5][5] = "n";
-	mazeGrid[5][6] = "n";
-	mazeGrid[5][7] = "n";
-	mazeGrid[6][7] = "n";
-	mazeGrid[6][8] = "n";
-	mazeGrid[7][8] = "g";
-*/	
 	updateGrid(1);
 	cachedData = ctx.getImageData(0, 0, 750, 500);
 	render();
@@ -101,6 +81,8 @@ function updateGrid(levelClear){
 			mazeGrid[7][8] = "g";
 		}
 		if(numberLevel == 2){
+			readStageFile();
+			/*
 			mazeGrid[5][5] = "p";
 			playerX = 5;
 			playerY = 5;
@@ -113,7 +95,7 @@ function updateGrid(levelClear){
 			mazeGrid[2][7] = "n";
 			mazeGrid[2][8] = "n";
 			mazeGrid[1][8] = "g";			
-			
+			*/
 		}
 		
 	}
@@ -380,3 +362,30 @@ function clickForDown(event) {
 	var command = document.getElementById("forInstr");
 	command.value = command.value + "D";
 }
+
+/*
+* Read file based on function taken from: 
+* http://www.htmlgoodies.com/beyond/javascript/read-text-files-using-the-javascript-filereader.html#fbid=Xyk8F7-GRic
+* 
+*/
+function readStageFile() {
+
+    var f = target.files[0]; 
+     if (!f) {
+        alert("Failed to load stage file");
+    } else if (!file.type.match('stage1.txt')) {
+		for(var i = 0; !file.type.match('stage1.txt'); i++){
+		 f = target.files[i];	
+		}
+    } else {
+      var r = new FileReader();
+
+      r.onload = function(e) { 
+	      var contents = e.target.result;
+	for (var x = 0; x < 30; x++) {
+		for (var y = 0; y < 20; y++) {
+			mazeGrid[x][y] = contents.substr((x*30)+y,1);
+		}
+       }
+      r.readAsText(f);
+  }
